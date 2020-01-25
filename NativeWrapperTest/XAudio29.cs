@@ -81,5 +81,11 @@ namespace Xaudio2Test
 
         [DllImport("XAudioWrapper.dll", EntryPoint = "GetGlitchesCount", CallingConvention = CallingConvention.Cdecl)]
         public static unsafe extern int GetGlitchesCount(IntPtr inIXAudio2);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void SourceVoiceCallbackDelegate();
+
+        [DllImport("XAudioWrapper.dll", EntryPoint = "SetSourceVoiceCallbackDelegate", CallingConvention = CallingConvention.Cdecl)]
+        public static unsafe extern void SetSourceVoiceCallbackDelegate(SourceVoiceCallbackDelegate callbackDelegate);
     }
 }

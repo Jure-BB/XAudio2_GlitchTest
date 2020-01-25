@@ -5,11 +5,14 @@
 #include <memory>
 #include <string>
 #include <conio.h>
+#include "VoiceCallback.h"
 
 XAUDIO2_BUFFER buffer = { 0 };
 IXAudio2* pXAudio2;
 IXAudio2MasteringVoice* pMasterVoice;
 IXAudio2SourceVoice* pSourceVoice;
+VoiceCallback* voiceCallback;
+
 
 int CreateMasteringVoice(IXAudio2* pXAudio2, IXAudio2MasteringVoice** outpMasterVoice)
 {
@@ -43,9 +46,13 @@ HRESULT CreateSourceVoice(IXAudio2* pXaudio2, byte* audioData, int audioBytes, W
 	waveFormat.nAvgBytesPerSec = sampleRate * waveFormat.nBlockAlign;
 	waveFormat.wBitsPerSample = 16;
 	waveFormat.cbSize = 0;
+
+	// Create VoiceCallback instance
+	voiceCallback = new VoiceCallback{};
 	
 	IXAudio2SourceVoice* pSourceVoice;
-	if (FAILED(hr = pXaudio2->CreateSourceVoice(&pSourceVoice, &waveFormat)))
+	//if (FAILED(hr = pXaudio2->CreateSourceVoice(&pSourceVoice, &waveFormat)))
+	if (FAILED(hr = pXaudio2->CreateSourceVoice(&pSourceVoice, &waveFormat, 0, XAUDIO2_DEFAULT_FREQ_RATIO, voiceCallback, NULL, NULL )))
 	{
 		return hr;
 	}
@@ -68,6 +75,8 @@ HRESULT PlaySourceVoice(IXAudio2SourceVoice* pSourceVoice)
 	// start playing
 	if (FAILED(hr = pSourceVoice->Start(0)))
 		return hr;
+
+	//WaitForSingleObjectEx( voiceCallback->hBufferEndEvent, INFINITE, TRUE );
 
 	return hr;
 }

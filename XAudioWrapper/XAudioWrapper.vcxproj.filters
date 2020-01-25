@@ -18,9 +18,15 @@
     <ClInclude Include="Wrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="VoiceCallback.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Wrapper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VoiceCallback.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

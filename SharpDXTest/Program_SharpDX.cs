@@ -35,8 +35,9 @@ namespace SharpDXTest
 
             // Create source voice
             var waveFormat = new WaveFormat(sampleRate, 16, channels);
-            var sourceVoice = new SourceVoice(xAudio, waveFormat, false);
-     
+            var sourceVoice = new SourceVoice(xAudio, waveFormat, true);
+            sourceVoice.BufferStart += SourceVoice_BufferStart;
+
             // Start playing audio
             sourceVoice.SubmitSourceBuffer(buffer, null);
             sourceVoice.Start();
@@ -48,14 +49,22 @@ namespace SharpDXTest
             Tools.CreateGarbage();
 
             // Output glitches count
-            Func<int> getGlichesCount = () => { 
+            Func<int> getGlichesCount = () =>
+            {
                 var perf = xAudio.PerformanceData;
                 return perf.GlitchesSinceEngineStarted;
-                };
+            };
             Console.WriteLine($"Glitches since engine started: {getGlichesCount()}");
 
             // Start loop
             Tools.StartLoop(getGlichesCount);
+        }
+
+        private static void SourceVoice_BufferStart(IntPtr obj)
+        {
+            Console.WriteLine();
+            Console.WriteLine("Callback successful!");
+            Console.WriteLine();
         }
     }
 }

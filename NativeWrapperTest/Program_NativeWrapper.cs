@@ -12,10 +12,11 @@ namespace Xaudio2Test
     class Program_NativeWrapper
     {
         const int XAUDIO2_DEBUG_ENGINE = 0x0001;
+       
         static void Main(string[] args)
         {
             Tools.ShowHelp("Native Wrapper");
-            
+
             // Create XAudio Engine
             var pXAudio2 = XAudio29.XAudio2Create(XAUDIO2_DEBUG_ENGINE, XAUDIO2_PROCESSOR.XAUDIO2_DEFAULT_PROCESSOR);
 
@@ -26,6 +27,10 @@ namespace Xaudio2Test
             var sampleRate = 48000;
             ushort channels = 2;
             var sineWave = AudioGen.CreateByteArraySineWave(TimeSpan.FromMinutes(3), sampleRate, channels, 220, 0.25);
+
+            // Set callback
+            XAudio29.SourceVoiceCallbackDelegate callback = CallbackTest;
+            XAudio29.SetSourceVoiceCallbackDelegate(callback);
 
             // Create source voice
             var pSourceVoice = XAudio29.CreateSourceVoice(pXAudio2, sineWave, channels, sampleRate);
@@ -50,5 +55,11 @@ namespace Xaudio2Test
             XAudio29.Destroy(pXAudio2, pMasteringVoice, pSourceVoice);
         }
 
+        static void CallbackTest()
+        {
+            Console.WriteLine();
+            Console.WriteLine("Callback successful!");
+            Console.WriteLine();
+        }
     }
 }
