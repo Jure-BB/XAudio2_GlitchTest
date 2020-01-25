@@ -1,16 +1,16 @@
 # XAudio2 Glitch Test
 Audio playback glitching test of different XAudio2 wrappers for .NET. 
 
-WARNING: Test programs allocate almost 5GB of memory. To run these tests, a PC with at least 8GB of RAM is recommended. 
+WARNING: Test programs allocate ~5GB of memory!
 
 ##### XAudio wrappers tested:
 
 - [SharpDX](https://github.com/sharpdx/SharpDX)
 - [Vortice](https://github.com/amerkoleci/Vortice.Windows)
-- Custom C style wrapper
+- Custom C style wrapper with C# interop
 
-In SharpDX and Vortice tests garbage collection is blocking XAudio2 thread and causing audio playback glitches. Both are using [SharpGenTools](https://github.com/SharpGenTools/SharpGenTools) to automate wrapper creation, so this may be or may not be the source of the problem. Although, a background GC is blocking a lot less than the other GC methods, user threads are still being suspended under certain circumstances, which is enough to cause audio playback glitches. See [here](https://stackoverflow.com/a/2584658/500861), [here](https://mattwarren.org/2017/01/13/Analysing-Pause-times-in-the-.NET-GC/) or [here](https://docs.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals) for more details on background GC.
+XAudio2 engine creates its own native thread. When using SharpDX or Vortice wrappers garbage collection is blocking XAudio2 thread and causing audio playback glitches. This might be due to the way they register for callbacks by default.
 
-With custom C style wrapper (using C# interop) audio playback is not blocked by GC. Note, that this wrapper is is just a quick test too see, if it is possible to have .NET XAudio2 wrapper that is not affected by GC. I'm not a C++ programmer, so it is probably full of bugs. 
+Custom C style wrapper with C# interop is is just a small .NET XAudio2 wrapper made for test purposes. Test using this wrapper is not affected by GC. Again, this may be because in this case we are not registering for callbacks. Note, that I don't have any background in C++, so this wrapper is probably full of bugs. 
 
-Make sure to run tests in a 'Release' mode and without VS debugger attached.
+Make sure to run tests in a 'Release' mode and without VS debugger attached. All 3 tests are playing a basic sine wave. The easiest way to test, if XAudio thread is being blocked, is to press H to run full blocking garbage collection and hear if sound output being blocked. 
