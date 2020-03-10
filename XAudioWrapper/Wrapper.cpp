@@ -49,10 +49,10 @@ HRESULT CreateSourceVoice(IXAudio2* pXaudio2, byte* audioData, int audioBytes, W
 
 	// Create VoiceCallback instance
 	voiceCallback = new VoiceCallback{};
-	
+
 	IXAudio2SourceVoice* pSourceVoice;
 	//if (FAILED(hr = pXaudio2->CreateSourceVoice(&pSourceVoice, &waveFormat)))
-	if (FAILED(hr = pXaudio2->CreateSourceVoice(&pSourceVoice, &waveFormat, 0, XAUDIO2_DEFAULT_FREQ_RATIO, voiceCallback, NULL, NULL )))
+	if (FAILED(hr = pXaudio2->CreateSourceVoice(&pSourceVoice, &waveFormat, 0, XAUDIO2_DEFAULT_FREQ_RATIO, voiceCallback, NULL, NULL)))
 	{
 		return hr;
 	}
@@ -93,6 +93,31 @@ int GetGlitchesCount(IXAudio2* pXAudio2)
 	XAUDIO2_PERFORMANCE_DATA perf = {};
 	pXAudio2->GetPerformanceData(&perf);
 	return perf.GlitchesSinceEngineStarted;
+}
+
+void Update()
+{
+	HANDLE events[3] = { voiceCallback->hBufferEndEvent, voiceCallback->hBufferStartEvent, voiceCallback->hVoiceProcessingPassStart };
+	DWORD result = WaitForMultipleObjectsEx(3, events, FALSE, 0, FALSE);
+	switch (result)
+	{
+		case WAIT_TIMEOUT:
+			break;
+
+		case WAIT_OBJECT_0:     // OnBufferEnd
+			voiceCallback->CallDelegate();
+			break;
+
+		case WAIT_OBJECT_0 + 1: // OnBufferStart
+			voiceCallback->CallDelegate();
+			break;
+		case WAIT_OBJECT_0 + 2: // OnVoiceProcessingPassStart
+			voiceCallback->CallDelegate();
+			break;
+
+		case WAIT_FAILED:
+			throw std::exception("WaitForMultipleObjects");
+	}
 }
 
 

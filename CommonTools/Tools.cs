@@ -11,6 +11,8 @@ namespace CommonTools
     {
         static GCLatencyMode GCLatencyMode = GCLatencyMode.Interactive;
 
+        public static int CallbacksCount { get; set; }
+
         public static void ShowHelp(string testName)
         {
             Console.WriteLine($"Test: {testName}{Environment.NewLine}" +
@@ -52,19 +54,28 @@ namespace CommonTools
                     FullBatchCollect(true);
 
                 if (pressed.Key == ConsoleKey.I)
-                { 
+                {
                     CreateGarbage();
                     OutputGlitchesCount(getGlitchesCount);
+                    OutputCallbacksCount();
                 }
 
                 if (pressed.Key == ConsoleKey.P)
+                {
                     OutputGlitchesCount(getGlitchesCount);
+                    OutputCallbacksCount();
+                }
             }
+        }
+
+        public static void OutputCallbacksCount()
+        {
+            Console.WriteLine($"Callbacks count: {CallbacksCount}{Environment.NewLine}");
         }
 
         private static void OutputGlitchesCount(Func<int> getGlitchesCount)
         {
-            Console.WriteLine($"{Environment.NewLine}Glitches since engine started:: {getGlitchesCount()}");
+            Console.WriteLine($"{Environment.NewLine}Glitches since engine started: {getGlitchesCount()}");
         }
 
         public static void CreateGarbage()
@@ -81,6 +92,7 @@ namespace CommonTools
 
         static List<Garbage> gList = new List<Garbage>();
     }
+
     class Garbage
     {
         int[] list = new int[100];

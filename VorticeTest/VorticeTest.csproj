@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Vortice.XAudio2" Version="1.5.0" />
+    <PackageReference Include="Vortice.XAudio2" Version="1.6.14-beta-ge3655f3472" />
   </ItemGroup>
 
   <Import Project="..\CommonTools\CommonTools.projitems" Label="Shared" />

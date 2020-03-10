@@ -41,6 +41,9 @@ namespace Xaudio2Test
             Debug.WriteLine("Playing audio...");
             Console.WriteLine("Playing audio...");
 
+            _ = Task.Run(AudioUpdateLoop);
+
+
             // Set GC latency mode and initialize some garbage
             Tools.SetGCLatencyMode();
             Tools.CreateGarbage();
@@ -48,6 +51,7 @@ namespace Xaudio2Test
             // Output glitches count
             Func<int> getGlichesCount = () => XAudio29.GetGlitchesCount(pXAudio2);
             Console.WriteLine($"Glitches since engine started: {getGlichesCount()}");
+            Tools.OutputCallbacksCount();
 
             // Start loop
             Tools.StartLoop(getGlichesCount);
@@ -55,11 +59,18 @@ namespace Xaudio2Test
             XAudio29.Destroy(pXAudio2, pMasteringVoice, pSourceVoice);
         }
 
+        private static void AudioUpdateLoop()
+        {
+            while (true)
+            {
+                XAudio29.Update();
+                Thread.Sleep(5);
+            }
+        }
+
         static void CallbackTest()
         {
-            Console.WriteLine();
-            Console.WriteLine("Callback successful!");
-            Console.WriteLine();
+            Tools.CallbacksCount++;
         }
     }
 }

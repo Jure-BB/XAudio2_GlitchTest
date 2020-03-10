@@ -87,5 +87,8 @@ namespace Xaudio2Test
 
         [DllImport("XAudioWrapper.dll", EntryPoint = "SetSourceVoiceCallbackDelegate", CallingConvention = CallingConvention.Cdecl)]
         public static unsafe extern void SetSourceVoiceCallbackDelegate(SourceVoiceCallbackDelegate callbackDelegate);
+
+        [DllImport("XAudioWrapper.dll", EntryPoint = "Update", CallingConvention = CallingConvention.Cdecl)]
+        public static unsafe extern void Update();
     }
 }

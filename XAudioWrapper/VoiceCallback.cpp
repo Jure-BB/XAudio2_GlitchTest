@@ -7,7 +7,7 @@ void SetSourceVoiceCallbackDelegate(SourceVoiceCallbackDelegate callback)
 	callbackDelegate = callback;
 }
 
-void CallDelegate()
+void VoiceCallback::CallDelegate()
 {
 	callbackDelegate();
 }

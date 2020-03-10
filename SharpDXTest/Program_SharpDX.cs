@@ -37,6 +37,7 @@ namespace SharpDXTest
             var waveFormat = new WaveFormat(sampleRate, 16, channels);
             var sourceVoice = new SourceVoice(xAudio, waveFormat, true);
             sourceVoice.BufferStart += SourceVoice_BufferStart;
+            sourceVoice.ProcessingPassStart += SourceVoice_ProcessingPassStart;
 
             // Start playing audio
             sourceVoice.SubmitSourceBuffer(buffer, null);
@@ -55,16 +56,20 @@ namespace SharpDXTest
                 return perf.GlitchesSinceEngineStarted;
             };
             Console.WriteLine($"Glitches since engine started: {getGlichesCount()}");
+            Tools.OutputCallbacksCount();
 
             // Start loop
             Tools.StartLoop(getGlichesCount);
         }
 
+        private static void SourceVoice_ProcessingPassStart(int obj)
+        {
+            Tools.CallbacksCount++;
+        }
+
         private static void SourceVoice_BufferStart(IntPtr obj)
         {
-            Console.WriteLine();
-            Console.WriteLine("Callback successful!");
-            Console.WriteLine();
+            Tools.CallbacksCount++;
         }
     }
 }

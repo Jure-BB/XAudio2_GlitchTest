@@ -12,12 +12,15 @@ namespace VorticeTest
 {
     class Program_Vortice
     {
+        static EngineCallback engineCallback;
+        static XAudioVoiceCallback voiceCallback;
         static void Main(string[] args)
         {
             Tools.ShowHelp("Vortice");
 
             // Create XAudio Engine
-            var xAudio = new IXAudio2(XAudio2Flags.DebugEngine, ProcessorSpecifier.DefaultProcessor);
+            //engineCallback = new EngineCallback();
+            var xAudio = new IXAudio2(XAudio2Flags.DebugEngine, ProcessorSpecifier.DefaultProcessor/*, engineCallback: engineCallback*/);
             // Create mastering voice
             var masteringVoice = xAudio.CreateMasteringVoice();
 
@@ -29,7 +32,8 @@ namespace VorticeTest
 
             // Create source voice
             var waveFormat = new WaveFormat(sampleRate, 16, channels);
-            var sourceVoice = xAudio.CreateSourceVoice(waveFormat);
+            voiceCallback = new XAudioVoiceCallback();
+            var sourceVoice = xAudio.CreateSourceVoice(waveFormat, callback: voiceCallback);
 
             // Start playing audio
             sourceVoice.SubmitSourceBuffer(buffer);
@@ -47,12 +51,10 @@ namespace VorticeTest
                 return perf.GlitchesSinceEngineStarted;
                 };
             Console.WriteLine($"Glitches since engine started: {getGlichesCount()}");
+            Tools.OutputCallbacksCount();
 
             // Start loop
             Tools.StartLoop(getGlichesCount);
         }
-
-        
-        
     }
 }
